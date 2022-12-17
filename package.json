@@ -1,0 +1,28 @@
+{
+  "name": "smart-rent-api",
+  "version": "1.0.0",
+  "description": "backend for the smart rent web application",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/B-raz23/smart-rent-api.git"
+  },
+  "author": "Biraj Sapkota",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/B-raz23/smart-rent-api/issues"
+  },
+  "homepage": "https://gitlab.com/B-raz23/smart-rent-api#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
