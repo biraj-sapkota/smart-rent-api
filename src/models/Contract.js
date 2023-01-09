@@ -24,4 +24,4 @@ const ContractSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("bill", ContractSchema);
+module.exports = mongoose.model("contract", ContractSchema);
