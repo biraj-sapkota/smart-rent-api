@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const userType = {
   Admin: "admin",
@@ -12,22 +12,22 @@ const UserSchema = new mongoose.Schema(
     name: {
       type: String,
       min: 5,
-      required: [true, 'Name is required'],
-      trim: true
+      required: [true, "Name is required"],
+      trim: true,
     },
     DOB: {
       type: Date,
       trim: true,
-      required: [true, 'Date of Birth is required'],
+      required: [true, "Date of Birth is required"],
     },
     contact: {
       type: Number,
-      required: [true, 'Contact is required'],
-      unique: true
+      required: [true, "Contact is required"],
+      unique: true,
     },
     address: {
       type: String,
-      required: [true, 'Address is required'],
+      required: [true, "Address is required"],
     },
     gender: {
       type: String,
@@ -45,7 +45,7 @@ const UserSchema = new mongoose.Schema(
     userType: {
       type: String,
       default: userType.Visitor,
-    }
+    },
   },
   {
     timestamps: true,

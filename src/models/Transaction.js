@@ -18,6 +18,10 @@ const TransactionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Bill",
     },
+    khalti: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Khalti",
+    },
   },
   {
     timestamps: true,
