@@ -1,14 +1,16 @@
-const express = require('express')
-require('dotenv').config()
-const connectToMongo = require('./config/dbConnection')
+const connectToMongo = require("./config/dbConnection");
+const configureExpress = require("./app");
+require("dotenv").config();
 
-connectToMongo();
-const app = express()
+const startServer = async () => {
+  await connectToMongo();
 
-app.get("/", (req, res) => {
-    res.send("Welcome to Smart Rent API!!")
-})
+  const app = configureExpress();
+  app.listen(process.env.port, () => {
+    console.log(`Server running at http://localhost:${process.env.port}`);
+  });
+};
 
-app.listen(process.env.port, () => {
-    console.log(`App running at http://localhost:${process.env.port}`)
-})
+startServer().catch((err) => {
+  console.log(err);
+});
