@@ -1,6 +1,17 @@
 const UserModel = require("../models/User");
 require("dotenv").config();
 
+exports.registerUser = (req, res) => {
+  const user = new UserModel(req.body);
+  user.save((err, data) => {
+    if (err) {
+      res.status(400).send(err);
+    } else {
+      return res.json(data);
+    }
+  });
+};
+
 exports.updateUser = (req, res) => {
   UserModel.findOneAndUpdate(
     { _id: req.params.userID },
