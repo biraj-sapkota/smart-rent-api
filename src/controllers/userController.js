@@ -37,3 +37,18 @@ exports.getUser = (_req, res) => {
     res.json(data);
   });
 };
+
+exports.getOneUser = (req, res) => {
+  UserModel.findById(req.params.userID, (err, data) => {
+    if (err) res.status(500).send(err);
+    res.json(data);
+  });
+};
+
+exports.checkUser = (req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    res.status(401).send("Unauthorized User!!");
+  }
+};
