@@ -1,8 +1,10 @@
 const UserModel = require("../models/User");
+const bcrypt = require('bcrypt')
 require("dotenv").config();
 
 exports.registerUser = (req, res) => {
   const user = new UserModel(req.body);
+  user.hashPassword = bcrypt.hashSync(req.body.password, 10)
   user.save((err, data) => {
     if (err) {
       res.status(400).send(err);
