@@ -1,15 +1,31 @@
 const UserModel = require("../models/User");
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 exports.registerUser = (req, res) => {
   const user = new UserModel(req.body);
-  user.hashPassword = bcrypt.hashSync(req.body.password, 10)
+  user.hashPassword = bcrypt.hashSync(req.body.password, 10);
   user.save((err, data) => {
     if (err) {
       res.status(400).send(err);
     } else {
       return res.json(data);
+    }
+  });
+};
+
+exports.loginUser = (req, res) => {
+  UserModel.findOne({ email: req.body.email }, (err, data) => {
+    if (err) throw err;
+
+    if (!data) {
+      res.status(404).send("User Not Found!!");
+    } else if (data) {
+      if (!data.comparePassword(req.body.password, data.hashPassword)) {
+        res.status(401).send("Wrong Password!!");
+      } else {
+        res.send("Logged In");
+      }
     }
   });
 };
