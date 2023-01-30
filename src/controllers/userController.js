@@ -1,5 +1,6 @@
 const UserModel = require("../models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 exports.registerUser = (req, res) => {
@@ -24,7 +25,16 @@ exports.loginUser = (req, res) => {
       if (!data.comparePassword(req.body.password, data.hashPassword)) {
         res.status(401).send("Wrong Password!!");
       } else {
-        res.send("Logged In");
+        res.json({
+          token: jwt.sign(
+            {
+              email: data.email,
+              userType: data.userType,
+              _id: data.id,
+            },
+            process.env.Secret_Key
+          ),
+        });
       }
     }
   });
