@@ -1,20 +1,20 @@
-const mongoose = require('mongoose')
-require('dotenv').config()
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-mongoose.set('strictQuery', false);
+mongoose.set("strictQuery", false);
 
 const connectToMongo = () => {
-    mongoose.connect(process.env.mongoURI, {
-        useNewUrlParser: true
+  mongoose
+    .connect(process.env.mongoURI, {
+      useNewUrlParser: true,
     })
     .then(() => {
-        console.log("Successful Connection to Database.")
-        
+      console.log("Successful Connection to Database.");
     })
     .catch((_err) => {
-        console.log("Can't Connect to Database!!")
-        process.exit()
-    })
-}
+      console.log("Can't Connect to Database!!");
+      process.exit();
+    });
+};
 
-module.exports = connectToMongo
+module.exports = connectToMongo;
