@@ -1,4 +1,4 @@
-const Room = require("../models/itemModel");
+const Room = require("../models/Room");
 
 exports.createRoom = (req, res) => {
   const room = new Room(req.body);
@@ -32,7 +32,7 @@ exports.deleteRoom = (req, res) => {
   });
 };
 
-exports.getAllRoom = (_req, res) => {
+exports.getRoom = (_req, res) => {
   Room.find({}, (err, data) => {
     if (err) res.status(500).send(err);
     res.json(data);

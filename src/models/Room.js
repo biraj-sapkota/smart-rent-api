@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const AddressSchema = new Schema(
+const AddressSchema = new mongoose.Schema(
   {
     street: {
       type: String,
@@ -21,7 +21,7 @@ const AddressSchema = new Schema(
   { _id: false }
 );
 
-const RoomDescriptionSchema = new Schema(
+const RoomDescriptionSchema = new mongoose.Schema(
   {
     roomType: {
       type: String,
