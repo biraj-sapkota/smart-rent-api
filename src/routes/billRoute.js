@@ -4,9 +4,9 @@ const billController = require("../controllers/billController");
 const billRouter = express.Router();
 
 billRouter.get("/", billController.getBill);
-billRouter.get("/:billId", billController.getSingleBill);
+billRouter.get("/:billID", billController.getSingleBill);
 billRouter.post("/", billController.createBill);
-billRouter.put("/:billId", billController.updateBill);
-billRouter.delete("/:billId", billController.deleteBill);
+billRouter.put("/:billID", billController.updateBill);
+billRouter.delete("/:billID", billController.deleteBill);
 
 module.exports = billRouter;

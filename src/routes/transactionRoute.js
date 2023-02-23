@@ -5,12 +5,12 @@ const transactionRouter = express.Router();
 
 transactionRouter.get("/", transactionController.getTransaction);
 transactionRouter.get(
-  "/:transactionId",
+  "/:transactionID",
   transactionController.getSingleTransaction
 );
 transactionRouter.post("/", transactionController.createTransaction);
 transactionRouter.delete(
-  "/:transactionId",
+  "/:transactionID",
   transactionController.deleteTransaction
 );
 

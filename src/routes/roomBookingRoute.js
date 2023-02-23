@@ -4,9 +4,9 @@ const roomBookingController = require("../controllers/roomBookingController");
 const roomBookingRouter = express.Router();
 
 roomBookingRouter.get("/", roomBookingController.getRoomBooking);
-roomBookingRouter.get("/:roomBookingId", roomBookingController.getSingleRoomBooking);
+roomBookingRouter.get("/:roomBookingID", roomBookingController.getSingleRoomBooking);
 roomBookingRouter.post("/", roomBookingController.makeRoomBooking);
-roomBookingRouter.put("/:roomBookingId", roomBookingController.updateRoomBooking);
-roomBookingRouter.delete("/:roomBookingId", roomBookingController.deleteRoomBooking);
+roomBookingRouter.put("/:roomBookingID", roomBookingController.updateRoomBooking);
+roomBookingRouter.delete("/:roomBookingID", roomBookingController.deleteRoomBooking);
 
 module.exports = roomBookingRouter;

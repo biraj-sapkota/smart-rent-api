@@ -25,16 +25,20 @@ exports.loginUser = (req, res) => {
       if (!data.comparePassword(req.body.password, data.hashPassword)) {
         res.status(401).send("Wrong Password!!");
       } else {
-        res.json({
-          token: jwt.sign(
-            {
-              email: data.email,
-              userType: data.userType,
-              _id: data.id,
-            },
-            process.env.Secret_Key
-          ),
-        });
+        jwt.sign(
+          {
+            email: data.email,
+            userType: data.userType,
+            _id: data.id,
+          },
+          process.env.Secret_Key,
+          {},
+          (err, token) => {
+            if (err) throw err;
+
+            res.cookie("token", token).json(data);
+          }
+        );
       }
     }
   });

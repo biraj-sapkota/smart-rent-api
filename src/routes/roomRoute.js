@@ -4,9 +4,9 @@ const roomController = require("../controllers/roomController");
 const roomRouter = express.Router();
 
 roomRouter.get("/", roomController.getRoom);
-roomRouter.get("/:roomId", roomController.getOneRoom);
+roomRouter.get("/:roomID", roomController.getOneRoom);
 roomRouter.post("/", roomController.createRoom);
-roomRouter.put("/:roomId", roomController.updateRoom);
-roomRouter.delete("/:roomId", roomController.deleteRoom);
+roomRouter.put("/:roomID", roomController.updateRoom);
+roomRouter.delete("/:roomID", roomController.deleteRoom);
 
 module.exports = roomRouter;
