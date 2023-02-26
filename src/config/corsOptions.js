@@ -1,5 +1,5 @@
-exports.corsOptions = {
-  origin: "*",
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
+// exports.corsOptions = {
+//   origin: "*",
+//   credentials: true,
+//   optionsSuccessStatus: 200,
+// };

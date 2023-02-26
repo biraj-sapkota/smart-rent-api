@@ -1,14 +1,21 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const routesSetup = require("./routes/index");
-const corsOptions = require("./config/corsOptions");
+// const corsOptions = require("./config/corsOptions");
 
 const configureExpress = () => {
   const app = express();
 
-  app.use(cors(corsOptions));
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
   app.use(express.json());
+  app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
 
   app.use((req, _res, next) => {

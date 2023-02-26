@@ -30,12 +30,12 @@ exports.loginUser = (req, res) => {
             email: data.email,
             userType: data.userType,
             _id: data.id,
+            name: data.name,
           },
           process.env.Secret_Key,
           {},
           (err, token) => {
             if (err) throw err;
-
             res.cookie("token", token).json(data);
           }
         );
@@ -82,5 +82,17 @@ exports.checkUser = (req, res, next) => {
     next();
   } else {
     res.status(401).send("Unauthorized User!!");
+  }
+};
+
+exports.getProfile = (req, res) => {
+  const { token } = req.cookies;
+  if (token) {
+    jwt.verify(token, process.env.Secret_Key, {}, async (err, user) => {
+      if (err) throw err;
+      res.json(user);
+    });
+  } else {
+    res.json(null);
   }
 };
