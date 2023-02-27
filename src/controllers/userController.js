@@ -44,6 +44,10 @@ exports.loginUser = (req, res) => {
   });
 };
 
+exports.logoutUser = (req, res) => {
+  res.cookie("token", "").json("Logged Out!!");
+};
+
 exports.updateUser = (req, res) => {
   UserModel.findOneAndUpdate(
     { _id: req.params.userID },
