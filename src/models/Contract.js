@@ -15,7 +15,7 @@ const ContractSchema = new mongoose.Schema(
       ref: "User",
     },
     agreementDetails: {
-      type: String,
+      type: Object,
       required: [true, "agreement details is required"],
     },
   },

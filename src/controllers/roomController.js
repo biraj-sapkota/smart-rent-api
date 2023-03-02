@@ -13,6 +13,11 @@ exports.createRoom = (req, res) => {
     });
 };
 
+exports.uploadPhotoByLink = (req, res) => {
+  const {link} = req.body
+  
+}
+
 exports.updateRoom = (req, res) => {
   Room.findOneAndUpdate(
     { _id: req.params.roomID },

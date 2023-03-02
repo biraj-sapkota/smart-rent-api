@@ -44,8 +44,12 @@ const RoomDescriptionSchema = new mongoose.Schema(
 
 const RoomSchema = new mongoose.Schema(
   {
-    roomImages: {
+    title:{
       type: String,
+      required: [true, "title is required."],
+    },
+    roomImages: {
+      type: [String],
       required: [true, "image is required."],
     },
     roomDescription: {
@@ -55,6 +59,9 @@ const RoomSchema = new mongoose.Schema(
     address: {
       type: AddressSchema,
       required: [true, "address is required."],
+    },
+    perks:{
+      type:[String],
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
