@@ -14,6 +14,7 @@ const configureExpress = () => {
       credentials: true,
     })
   );
+  app.use('/uploads', express.static(__dirname + '/controllers/uploads'))
   app.use(express.json());
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
