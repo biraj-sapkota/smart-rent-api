@@ -4,6 +4,7 @@ const roomController = require("../controllers/roomController");
 const roomRouter = express.Router();
 
 roomRouter.get("/", roomController.getRoom);
+roomRouter.get("/user-room", roomController.getRoomByUser);
 roomRouter.post("/upload-by-link", roomController.uploadPhotoByLink);
 roomRouter.post(
   "/upload",

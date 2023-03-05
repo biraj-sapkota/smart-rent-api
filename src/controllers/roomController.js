@@ -1,21 +1,31 @@
 const Room = require("../models/Room");
 const imageDownloader = require("image-downloader");
+const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const fs = require("fs");
 
 exports.photosMiddleware = multer({ dest: __dirname + "/uploads" });
 
 exports.createRoom = (req, res) => {
-  const room = new Room(req.body);
-
-  room
-    .save()
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((_err) => {
-      res.status(500).send("Error adding the room.");
+  const { token } = req.cookies;
+  jwt.verify(token, process.env.Secret_Key, {}, async (err, userData) => {
+    if (err) throw err;
+    const room = new Room({
+      title: req.body.title,
+      roomImages: req.body.photos,
+      roomDescription: req.body.description,
+      address: req.body.address,
+      owner: userData._id,
     });
+    await room
+      .save()
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((_err) => {
+        res.status(500).send("Error adding the room.");
+      });
+  });
 };
 
 exports.uploadPhotoByLink = async (req, res) => {
@@ -64,6 +74,15 @@ exports.getRoom = (_req, res) => {
   Room.find({}, (err, data) => {
     if (err) res.status(500).send(err);
     res.json(data);
+  });
+};
+
+exports.getRoomByUser = (req, res) => {
+  const { token } = req.cookies;
+  jwt.verify(token, process.env.Secret_Key, {}, async (err, userData) => {
+    if (err) throw err;
+    const { _id } = userData;
+    res.json(await Room.find({ owner: _id }));
   });
 };
 
