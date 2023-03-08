@@ -31,11 +31,15 @@ exports.createRoom = (req, res) => {
 exports.uploadPhotoByLink = async (req, res) => {
   const { link } = req.body;
   const newName = "photo" + Date.now() + ".jpg";
-  await imageDownloader.image({
-    url: link,
-    dest: __dirname + "/uploads/" + newName,
-  });
-  res.json(newName);
+  try {
+    await imageDownloader.image({
+      url: link,
+      dest: __dirname + "/uploads/" + newName,
+    });
+    res.json(newName);
+  } catch (error) {
+    res.status(500);
+  }
 };
 
 exports.uploadPhoto = async (req, res) => {
