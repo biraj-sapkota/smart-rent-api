@@ -1,16 +1,19 @@
 const RoomBooking = require("../models/RoomBooking");
+const jwt = require("jsonwebtoken");
 
 exports.makeRoomBooking = (req, res) => {
-  const roomBooking = new RoomBooking(req.body);
-
-  roomBooking
-    .save()
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((_err) => {
-      res.status(500).send("Unable to make the booking.");
-    });
+  const { token } = req.cookies;
+  jwt.verify(token, process.env.Secret_Key, {}, async (err, userData) => {
+    if (err) throw err;
+    const { room } = req.body;
+    RoomBooking.create({ user: userData._id, room })
+      .then((doc) => {
+        res.json(doc);
+      })
+      .catch((err) => {
+        throw err;
+      });
+  });
 };
 
 exports.updateRoomBooking = (req, res) => {
@@ -32,10 +35,11 @@ exports.deleteRoomBooking = (req, res) => {
   });
 };
 
-exports.getRoomBooking = (_req, res) => {
-  RoomBooking.find({}, (err, data) => {
-    if (err) res.status(500).send(err);
-    res.json(data);
+exports.getRoomBooking = async (req, res) => {
+  const { token } = req.cookies;
+  jwt.verify(token, process.env.Secret_Key, {}, async (err, userData) => {
+    if (err) throw err;
+    res.json(await RoomBooking.find({ user: userData._id }).populate("room"));
   });
 };
 

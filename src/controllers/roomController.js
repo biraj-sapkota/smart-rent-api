@@ -15,6 +15,9 @@ exports.createRoom = (req, res) => {
       roomImages: req.body.photos,
       roomDescription: req.body.description,
       address: req.body.address,
+      numberOfrooms: req.body.numberOfRooms,
+      rentAmount: req.body.rentAmount,
+      roomType: req.body.roomType,
       owner: userData._id,
     });
     await room
@@ -90,9 +93,7 @@ exports.getRoomByUser = (req, res) => {
   });
 };
 
-exports.getOneRoom = (req, res) => {
-  Room.findById(req.params.roomID, (err, data) => {
-    if (err) res.status(500).send(err);
-    res.json(data);
-  });
+exports.getOneRoom = async(req, res) => {
+  const {roomID} = req.params;
+  res.json(await Room.findById(roomID));
 };
