@@ -93,7 +93,7 @@ exports.getRoomByUser = (req, res) => {
   });
 };
 
-exports.getOneRoom = async(req, res) => {
-  const {roomID} = req.params;
+exports.getOneRoom = async (req, res) => {
+  const { roomID } = req.params;
   res.json(await Room.findById(roomID));
 };

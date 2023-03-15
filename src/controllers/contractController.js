@@ -10,7 +10,7 @@ exports.createContract = (req, res) => {
     })
     .catch((_err) => {
       res.status(500).send("Error creating the contract.");
-      console.log(_err)
+      console.log(_err);
     });
 };
 
