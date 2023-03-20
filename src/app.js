@@ -10,7 +10,7 @@ const configureExpress = () => {
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: ["http://localhost:3000", " http://192.168.1.72:3000"],
       credentials: true,
     })
   );

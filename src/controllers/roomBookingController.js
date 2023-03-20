@@ -3,10 +3,12 @@ const jwt = require("jsonwebtoken");
 
 exports.makeRoomBooking = (req, res) => {
   const { token } = req.cookies;
+
+  if(!token) throw "User Must be logged in"
   jwt.verify(token, process.env.Secret_Key, {}, async (err, userData) => {
     if (err) throw err;
     const { room } = req.body;
-    RoomBooking.create({ user: userData._id, room })
+    await RoomBooking.create({ user: userData._id, room })
       .then((doc) => {
         res.json(doc);
       })
