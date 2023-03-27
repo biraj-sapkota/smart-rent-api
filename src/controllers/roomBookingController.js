@@ -1,16 +1,23 @@
 const RoomBooking = require("../models/RoomBooking");
+const Room = require("../models/Room");
 const jwt = require("jsonwebtoken");
 
 exports.makeRoomBooking = (req, res) => {
   const { token } = req.cookies;
 
-  if(!token) throw "User Must be logged in"
+  if (!token) throw "User Must be logged in";
   jwt.verify(token, process.env.Secret_Key, {}, async (err, userData) => {
     if (err) throw err;
     const { room } = req.body;
     await RoomBooking.create({ user: userData._id, room })
       .then((doc) => {
-        res.json(doc);
+        Room.findOneAndUpdate(
+          { _id: room },
+          { availability: false },
+          { new: true }
+        ).then(() => {
+          res.json(doc);
+        });
       })
       .catch((err) => {
         throw err;
