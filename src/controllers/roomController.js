@@ -86,6 +86,7 @@ exports.getRoom = (_req, res) => {
 
 exports.getRoomByUser = (req, res) => {
   const { token } = req.cookies;
+  if (!token) throw "User Must be logged in";
   jwt.verify(token, process.env.Secret_Key, {}, async (err, userData) => {
     if (err) throw err;
     const { _id } = userData;
