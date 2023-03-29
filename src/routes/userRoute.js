@@ -10,8 +10,6 @@ userRouter.post("/logout", userController.logoutUser);
 userRouter.get("/:userID", userController.checkUser, userController.getOneUser);
 userRouter.post(
   "/register",
-  userSchema,
-  validateUserSchema,
   userController.registerUser
 );
 userRouter.post("/login", userController.loginUser);

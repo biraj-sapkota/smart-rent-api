@@ -10,7 +10,7 @@ exports.registerUser = (req, res) => {
     if (err) {
       res.status(400).send(err);
     } else {
-      return res.json(data);
+      return res.json("User Registered with email: " + user.email);
     }
   });
 };

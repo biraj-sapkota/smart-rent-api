@@ -4,6 +4,13 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const routesSetup = require("./routes/index");
 // const corsOptions = require("./config/corsOptions");
+var cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
 
 const configureExpress = () => {
   const app = express();
