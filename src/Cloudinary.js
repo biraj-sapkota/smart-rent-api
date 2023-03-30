@@ -1,17 +1,17 @@
-var multer = require('multer');
-var cloudinary = require('cloudinary').v2;
+var multer = require("multer");
+var cloudinary = require("cloudinary").v2;
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads');
+    cb(null, "uploads");
   },
   filename: (req, file, cb) => {
-    cb(null, file.fieldname + '-' + Date.now());
+    cb(null, file.fieldname + "-" + Date.now());
   },
 });
 
-const CloudinaryUpload = async (image) => {
-  return cloudinary.uploader.upload(image);
+const CloudinaryUpload = async (filePath) => {
+  return cloudinary.uploader.upload(filePath);
 };
 
 var MulterUpload = multer({ storage: storage });

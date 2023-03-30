@@ -3,16 +3,20 @@ const imageDownloader = require("image-downloader");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const fs = require("fs");
+const Cloudinary = require("../Cloudinary");
 
 exports.photosMiddleware = multer({ dest: __dirname + "/uploads" });
 
-exports.createRoom = (req, res) => {
-  const { token } = req.cookies;
-  jwt.verify(token, process.env.Secret_Key, {}, async (err, userData) => {
-    if (err) throw err;
+exports.createRoom = async (req, res) => {
+  try {
+    const { token } = req.cookies;
+    const userData = jwt.verify(token, process.env.Secret_Key);
+    const photos = req.body.photos;
+
+    const urls = photos.map((photo) => photo.url);
     const room = new Room({
       title: req.body.title,
-      roomImages: req.body.photos,
+      roomImages: urls,
       roomDescription: req.body.description,
       address: req.body.address,
       numberOfrooms: req.body.numberOfRooms,
@@ -20,40 +24,35 @@ exports.createRoom = (req, res) => {
       roomType: req.body.roomType,
       owner: userData._id,
     });
-    await room
-      .save()
-      .then((data) => {
-        res.send(data);
-      })
-      .catch((_err) => {
-        res.status(500).send("Error adding the room.");
-      });
-  });
+
+    const savedRoom = await room.save();
+    res.status(200).json(savedRoom);
+  } catch (err) {
+    res.status(500).json({ error: "Error adding the room." });
+  }
 };
 
 exports.uploadPhotoByLink = async (req, res) => {
   const { link } = req.body;
-  const newName = "photo" + Date.now() + ".jpg";
+
   try {
-    await imageDownloader.image({
-      url: link,
-      dest: __dirname + "/uploads/" + newName,
-    });
-    res.json(newName);
+    const result = await Cloudinary.CloudinaryUpload(link);
+
+    res.json(result);
   } catch (error) {
-    res.status(500);
+    console.error(error);
+    res.status(500).json({ error: "Failed to upload photo" });
   }
 };
 
 exports.uploadPhoto = async (req, res) => {
   const uploadedFiles = [];
   for (let i = 0; i < req.files.length; i++) {
-    const { path, originalname } = req.files[i];
-    const parts = originalname.split(".");
-    const ext = parts[parts.length - 1];
-    const newPath = path + "." + ext;
-    fs.renameSync(path, newPath);
-    uploadedFiles.push(newPath.replace(__dirname + "/uploads", ""));
+    const file = req.files[i];
+    const newPath = file.path + "." + file.originalname.split(".").pop();
+    fs.renameSync(file.path, newPath);
+    const uploadedFile = await Cloudinary.CloudinaryUpload(newPath);
+    uploadedFiles.push(uploadedFile);
   }
   res.json(uploadedFiles);
 };
