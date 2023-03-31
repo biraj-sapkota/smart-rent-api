@@ -46,10 +46,15 @@ exports.deleteRoomBooking = (req, res) => {
 
 exports.getRoomBooking = async (req, res) => {
   const { token } = req.cookies;
-  jwt.verify(token, process.env.Secret_Key, {}, async (err, userData) => {
-    if (err) throw err;
-    res.json(await RoomBooking.find({ user: userData._id }).populate("room"));
-  });
+  try {
+    const userData = jwt.verify(token, process.env.Secret_Key);
+    const roomBookings = await RoomBooking.find({
+      user: userData._id,
+    }).populate("room");
+    res.json(roomBookings);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 };
 
 exports.getSingleRoomBooking = (req, res) => {

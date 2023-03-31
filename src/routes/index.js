@@ -4,6 +4,7 @@ const bill = require("./billRoute");
 const contract = require("./contractRoute");
 const transaction = require("./transactionRoute");
 const roomBooking = require("./roomBookingRoute");
+const chat = require("./chatRoute");
 
 const routesSetup = (app) => {
   app.get("/", (_req, res) => res.send("Welcome - Smart Rent API!!"));
@@ -13,6 +14,7 @@ const routesSetup = (app) => {
   app.use("/api/contract", contract);
   app.use("/api/transaction", transaction);
   app.use("/api/roombooking", roomBooking);
+  app.use("/api/chat", chat);
 };
 
 module.exports = routesSetup;

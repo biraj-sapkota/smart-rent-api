@@ -12,7 +12,7 @@ const ChatSchema = new mongoose.Schema(
     },
     message: {
       type: String,
-      required: [true, "message is required"],
+      required: [true, "Message is required"],
     },
   },
   {
@@ -20,4 +20,4 @@ const ChatSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("chat", ChatSchema);
+module.exports = mongoose.model("Chat", ChatSchema);

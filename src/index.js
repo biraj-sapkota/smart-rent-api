@@ -1,13 +1,20 @@
 const connectToMongo = require("./config/dbConnection");
 const configureExpress = require("./app");
 require("dotenv").config();
+const chatController = require("./controllers/chatController");
+const socketIO = require("socket.io");
+const http = require("http");
 
 const startServer = async () => {
   await connectToMongo();
 
   const app = configureExpress();
-  app.listen(process.env.port, () => {
-    console.log(`Server running at http://localhost:${process.env.port}`);
+  const server = http.createServer(app);
+  const io = socketIO(server);
+  chatController.setIO(io);
+
+  server.listen(process.env.PORT, () => {
+    console.log(`Server running at http://localhost:${process.env.PORT}`);
   });
 };
 

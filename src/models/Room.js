@@ -54,8 +54,9 @@ const RoomSchema = new mongoose.Schema(
       trim: true,
       required: [true, "rent amount is required in description."],
     },
-    perks: {
-      type: [String],
+    contract: {
+      type: Object,
+      required: [true, "agreement details is required"],
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
