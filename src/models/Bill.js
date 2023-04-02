@@ -16,7 +16,33 @@ const BillSchema = new mongoose.Schema(
     },
     billAmount: {
       type: Number,
-      required: [true, "amount is required."],
+      required: [true, "Amount is required."],
+    },
+    electricityUnits: {
+      type: Number,
+      required: [true, "Electricity units are required."],
+    },
+    waterUnits: {
+      type: Number,
+      required: [true, "Water units are required."],
+    },
+    garbageRate: {
+      type: Number,
+      required: [true, "Garbage rate is required."],
+    },
+    extraCharges: {
+      type: Number,
+      default: 0,
+    },
+    description: {
+      type: String,
+    },
+    billDate: {
+      type: Date,
+      default: Date.now,
+      get: (date) => {
+        return new Date(date).toISOString().slice(0, 7);
+      },
     },
     paidStatus: {
       type: Boolean,
@@ -28,4 +54,4 @@ const BillSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("bill", BillSchema);
+module.exports = mongoose.model("Bill", BillSchema);

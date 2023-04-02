@@ -1,23 +1,20 @@
 const mongoose = require("mongoose");
 
-const ConversationSchema = new mongoose.Schema(
-  {
-    members: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "user",
-        },
-      ],
-    },
-    room: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Room",
-    },
+const conversationSchema = new mongoose.Schema({
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
-  { timestamps: true }
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  roomId: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true },
+});
+
+conversationSchema.index(
+  { ownerId: 1, userId: 1, roomId: 1 },
+  { unique: true }
 );
 
-const Conversation = mongoose.model("Conversation", ConversationSchema);
+const Conversation = mongoose.model("Conversation", conversationSchema);
 
 module.exports = Conversation;

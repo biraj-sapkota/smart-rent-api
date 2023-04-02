@@ -5,7 +5,6 @@ const userType = {
   Admin: "admin",
   Tenant: "tenant",
   Owner: "owner",
-  Visitor: "visitor",
 };
 
 const UserSchema = new mongoose.Schema(
@@ -45,7 +44,7 @@ const UserSchema = new mongoose.Schema(
     },
     userType: {
       type: String,
-      default: userType.Visitor,
+      default: userType.Tenant,
     },
   },
   {

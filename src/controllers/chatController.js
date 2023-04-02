@@ -5,13 +5,13 @@ const jwt = require("jsonwebtoken");
 
 let io;
 
-const findConversation = async (req, res, next) => {
+const findConversation = async (req, _res, next) => {
   const { roomId, ownerId, userId } = req.query;
   let conversation = await Conversation.findOne({
-    members: { $all: [ownerId, userId] },
-    room: roomId,
-  }).populate("members");
-  console.log(conversation);
+    ownerId,
+    userId,
+    roomId,
+  });
   if (conversation) {
     req.conversationId = conversation._id;
     next();
@@ -19,31 +19,22 @@ const findConversation = async (req, res, next) => {
 };
 
 const createConversation = async (req, res, next) => {
-  let conversation = await Conversation.findOne({
-    members: { $all: [req.body.ownerId, req.body.userId] },
-    room: req.body.roomId,
-  }).populate("members");
-  console.log(conversation);
-  if (!conversation) {
-    const newConversation = new Conversation({
-      members: [req.body.ownerId, req.body.userId],
-      room: req.body.roomId,
-    });
-    try {
-      newConversation.save().then(async (savedConversation) => {
-        await savedConversation.populate("members");
+  try {
+    const conversation = await Conversation.findOneAndUpdate(
+      {
+        ownerId: req.body.ownerId,
+        userId: req.body.userId,
+        roomId: req.body.roomId,
+      },
+      {},
+      { upsert: true, new: true }
+    );
 
-        req.conversationId = savedConversation._id;
-        res.status(200).json(savedConversation);
-        next();
-      });
-    } catch (err) {
-      console.log(err);
-      res.status(400).json(err.message);
-    }
-  } else {
     req.conversationId = conversation._id;
     next();
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err.message);
   }
 };
 
@@ -58,22 +49,18 @@ const postMessage = async (req, res) => {
       sender: userId,
       message,
     });
-
     // Save the chat message
     const savedMessage = await chat.save();
-
+    res.json(savedMessage);
     // Emit the message event to all sockets in the conversation
     io.in(conversationId).emit("message", {
       conversationId,
       userId,
       message: savedMessage.message, // Use the 'message' property of the saved message
     });
-
-    // Send the saved message as the response
-    res.json(savedMessage);
   } catch (error) {
     console.error("Error posting message:", error);
-    res.status(500).json({ error: "Failed to post message" });
+    return res.status(500).json({ error: "Failed to post message" });
   }
 };
 
@@ -84,7 +71,6 @@ const setIO = (socketIO) => {
 // Get messages for a conversation
 const getMessages = async (req, res) => {
   const conversationId = req.conversationId;
-  console.log(conversationId);
   try {
     // Retrieve all chat messages for the given conversation
     const messages = await Chat.find({

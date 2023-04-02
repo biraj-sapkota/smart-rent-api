@@ -1,16 +1,83 @@
 const Bill = require("../models/Bill");
+const User = require("../models/User");
+const nodemailer = require("nodemailer");
+const RoomModel = require("../models/Room");
+require("dotenv").config();
 
-exports.createBill = (req, res) => {
-  const bill = new Bill(req.body);
+exports.createBill = async (req, res) => {
+  try {
+    const {
+      room,
+      generator,
+      receiver,
+      billAmount,
+      electricityUnits,
+      waterUnits,
+      garbageRate,
+      extraCharges,
+      description,
+    } = req.body;
 
-  bill
-    .save()
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((_err) => {
-      res.status(500).send("Error adding the bill.");
+    // Create the bill
+    const bill = new Bill({
+      room,
+      generator,
+      receiver,
+      billAmount,
+      electricityUnits,
+      waterUnits,
+      garbageRate,
+      extraCharges,
+      description,
     });
+
+    console.log(bill);
+    // Save the bill
+
+    // Get the receiver's email from the User schema
+    const receiverUser = await User.findById(receiver);
+    const receiverEmail = receiverUser.email;
+    console.log(receiverEmail);
+    // Send email to the receiver
+    await sendEmail(
+      receiverEmail,
+      "New Bill Issued",
+      "Your bill has been issued. Kindly clear them quickly."
+    );
+    await bill.save();
+
+    res.status(200).json({ message: "Bill created successfully." });
+  } catch (error) {
+    console.error("Error creating bill:", error);
+    res.status(500).json({ error: "Failed to create bill." });
+  }
+};
+
+// Send email function using nodemailer
+const sendEmail = async (toEmail, subject, message) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.Google_UserName,
+        pass: process.env.Google_Password,
+      },
+    });
+
+    // Compose the email
+    const mailOptions = {
+      from: process.env.Google_UserName,
+      to: toEmail,
+      subject: subject,
+      text: message,
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw new Error("Failed to send email.");
+  }
 };
 
 exports.updateBill = (req, res) => {
@@ -44,4 +111,41 @@ exports.getSingleBill = (req, res) => {
     if (err) res.status(500).send(err);
     res.json(data);
   });
+};
+
+exports.getTenantDetails = async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    // Find rooms of the specified owner
+    const rooms = await RoomModel.find({ owner: userId });
+
+    // Array to store tenant details
+    const tenantDetails = [];
+
+    // Iterate over each room
+    for (const room of rooms) {
+      // Find the tenant for the room
+      const tenant = await User.findById(room.tenant);
+
+      // If tenant exists, add the details to the array
+      if (tenant) {
+        const { name, contact, email, address } = tenant;
+        const tenantInfo = {
+          name,
+          contact,
+          email,
+          address,
+          roomId: room._id,
+          flatRent: room.rentAmount,
+          tenantId: tenant._id,
+        };
+        tenantDetails.push(tenantInfo);
+      }
+    }
+
+    // Return the tenant details
+    res.json(tenantDetails);
+  } catch (error) {
+    next(error);
+  }
 };
