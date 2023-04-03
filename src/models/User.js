@@ -46,6 +46,12 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: userType.Tenant,
     },
+    validDocument: {
+      type: String,
+    },
+    remarks: {
+      type: String,
+    },
   },
   {
     timestamps: true,

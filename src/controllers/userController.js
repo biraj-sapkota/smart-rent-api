@@ -2,6 +2,8 @@ const UserModel = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const Cloudinary = require("../Cloudinary");
+const fs = require("fs");
 
 exports.registerUser = (req, res) => {
   const user = new UserModel(req.body);
@@ -98,5 +100,29 @@ exports.getProfile = (req, res) => {
     });
   } else {
     res.json(null);
+  }
+};
+
+exports.requestOwnership = async (req, res) => {
+  const { userId, images, remarks } = req.body;
+  try {
+    // Find the user by userId
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Add the provided images to the validDocument array
+    user.validDocument = images;
+    user.remarks = remarks;
+
+    // Save the updated user document
+    const updatedUser = await user.save();
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error("Error adding valid documents:", error);
+    res.status(500).json({ error: "Failed to add valid documents" });
   }
 };
