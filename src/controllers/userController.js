@@ -31,8 +31,13 @@ exports.loginUser = (req, res) => {
           {
             email: data.email,
             userType: data.userType,
+            DOB: data.DOB,
+            contact: data.contact,
+            address: data.address,
+            gender: data.gender,
             _id: data.id,
             name: data.name,
+            validDocument: data.validDocument,
           },
           process.env.Secret_Key,
           {},
@@ -50,16 +55,23 @@ exports.logoutUser = (req, res) => {
   res.cookie("token", "").json("Logged Out!!");
 };
 
-exports.updateUser = (req, res) => {
-  UserModel.findOneAndUpdate(
-    { _id: req.params.userID },
-    req.body,
-    { new: true, useFindAndModify: false },
-    (err, data) => {
-      if (err) res.status(500).send(err);
-      res.json(data);
+exports.updateUser = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    // Find the user by userId
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
-  );
+
+    user.userType = "owner";
+    const updatedUser = await user.save();
+    res.status(200).json(updatedUser._id);
+  } catch (error) {
+    console.error("Error approving request:", error);
+    res.status(500).json({ error: "Failed to approve user." });
+  }
 };
 
 exports.deleteUser = (req, res) => {
@@ -70,9 +82,12 @@ exports.deleteUser = (req, res) => {
 };
 
 exports.getUser = (_req, res) => {
-  UserModel.find({}, (err, data) => {
-    if (err) res.status(500).send(err);
-    res.json(data);
+  UserModel.find({}, "-hashPassword", (err, data) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(data);
+    }
   });
 };
 
