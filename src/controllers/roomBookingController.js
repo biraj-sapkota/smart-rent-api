@@ -1,28 +1,42 @@
-const RoomBooking = require("../models/RoomBooking");
+const Contract = require("../models/Contract");
 const Room = require("../models/Room");
 const jwt = require("jsonwebtoken");
+const Transaction = require("../models/Transaction");
 
 exports.makeRoomBooking = (req, res) => {
   const { token } = req.cookies;
 
   if (!token) throw "User Must be logged in";
-  jwt.verify(token, process.env.Secret_Key, {}, async (err, userData) => {
-    if (err) throw err;
-    const { room } = req.body;
-    await RoomBooking.create({ user: userData._id, room })
-      .then((doc) => {
-        Room.findOneAndUpdate(
-          { _id: room },
-          { availability: false },
-          { new: true }
-        ).then(() => {
-          res.json(doc);
-        });
-      })
-      .catch((err) => {
-        throw err;
+  try {
+    jwt.verify(token, process.env.Secret_Key, {}, async (_err, userData) => {
+      const { roomId, ownerId, payload, agreementDetails } = req.body;
+      const contract = new Contract({
+        tenant: userData._id,
+        room: roomId,
+        owner: ownerId,
+        agreementDetails: agreementDetails,
       });
-  });
+      const booking = await contract.save();
+
+      const transaction = new Transaction({
+        transactionAmount: payload.amount / 0.1,
+        payor: userData._id,
+        receiver: ownerId,
+        khalti_idx: payload.idx,
+      });
+      await transaction.save();
+
+      const room = await Room.findById(roomId);
+      room.availability = false;
+      room.tenant = userData._id;
+      await room.save();
+
+      res.status(200).json(booking);
+    });
+  } catch (error) {
+    console.error("Error booking the room:", error);
+    res.status(500).json({ error: "Failed to book the room" });
+  }
 };
 
 exports.updateRoomBooking = (req, res) => {

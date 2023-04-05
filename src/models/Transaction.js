@@ -17,10 +17,11 @@ const TransactionSchema = new mongoose.Schema(
     bill: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Bill",
+      default: null,
     },
-    khalti: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Khalti",
+    khalti_idx: {
+      type: String,
+      required: true,
     },
   },
   {
