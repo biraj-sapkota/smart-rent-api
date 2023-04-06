@@ -33,9 +33,13 @@ exports.deleteContract = (req, res) => {
   });
 };
 
-exports.getContract = (_req, res) => {
-  Contract.find({}, (err, data) => {
-    if (err) res.status(500).send(err);
-    res.json(data);
-  });
+exports.getContract = async (req, res) => {
+  const { userId } = req.query;
+  try {
+    // Find bills of the specified user
+    const contracts = await Contract.find({ tenant: userId });
+    res.json(contracts);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 };
