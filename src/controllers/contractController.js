@@ -36,8 +36,9 @@ exports.deleteContract = (req, res) => {
 exports.getContract = async (req, res) => {
   const { userId } = req.query;
   try {
-    // Find bills of the specified user
-    const contracts = await Contract.find({ tenant: userId });
+    // Find contracts of the specified user and populate the associated room data
+    const contracts = await Contract.find({ tenant: userId }).populate("room");
+
     res.json(contracts);
   } catch (error) {
     res.status(500).json(error);

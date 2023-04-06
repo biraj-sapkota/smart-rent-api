@@ -4,7 +4,7 @@ const ContractSchema = new mongoose.Schema(
   {
     room: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Room",
+      ref: "room",
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
