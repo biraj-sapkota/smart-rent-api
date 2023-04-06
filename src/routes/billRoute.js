@@ -4,6 +4,7 @@ const billController = require("../controllers/billController");
 const billRouter = express.Router();
 
 billRouter.get("/", billController.getBill);
+billRouter.get("/invoice", billController.getInvoice);
 billRouter.get("/:userId", billController.getTenantDetails);
 billRouter.get("/:billID", billController.getSingleBill);
 billRouter.post("/", billController.createBill);

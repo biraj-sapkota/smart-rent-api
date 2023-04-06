@@ -99,11 +99,26 @@ exports.deleteBill = (req, res) => {
   });
 };
 
-exports.getBill = (_req, res) => {
-  Bill.find({}, (err, data) => {
-    if (err) res.status(500).send(err);
-    res.json(data);
-  });
+exports.getBill = async (req, res) => {
+  const { userId } = req.query;
+  try {
+    // Find bills of the specified user
+    const bills = await Bill.find({ receiver: userId });
+    res.json(bills);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+exports.getInvoice = async (req, res) => {
+  const { userId } = req.query;
+  try {
+    // Find bills of the specified user
+    const bills = await Bill.find({ generator: userId });
+    res.json(bills);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 };
 
 exports.getSingleBill = (req, res) => {

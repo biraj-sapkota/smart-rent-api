@@ -10,6 +10,10 @@ const TransactionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    room: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "room",
+    },
     receiver: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

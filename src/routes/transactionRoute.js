@@ -4,10 +4,7 @@ const transactionController = require("../controllers/transactionController");
 const transactionRouter = express.Router();
 
 transactionRouter.get("/", transactionController.getTransaction);
-transactionRouter.get(
-  "/:transactionID",
-  transactionController.getSingleTransaction
-);
+transactionRouter.get("/history", transactionController.getTransactionHistory);
 transactionRouter.post("/", transactionController.createTransaction);
 transactionRouter.delete(
   "/:transactionID",

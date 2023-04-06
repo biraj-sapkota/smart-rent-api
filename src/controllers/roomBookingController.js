@@ -21,6 +21,7 @@ exports.makeRoomBooking = (req, res) => {
       const transaction = new Transaction({
         transactionAmount: payload.amount / 0.1,
         payor: userData._id,
+        room: roomId,
         receiver: ownerId,
         khalti_idx: payload.idx,
       });
