@@ -70,7 +70,8 @@ exports.updateRoom = (req, res) => {
 };
 
 exports.deleteRoom = (req, res) => {
-  Room.deleteOne({ _id: req.params.roomID }, (err) => {
+  const { roomId } = req.query;
+  Room.deleteOne({ _id: roomId }, (err) => {
     if (err) res.status(500).send(err);
     res.send("Room Deleted Successfully!!");
   });

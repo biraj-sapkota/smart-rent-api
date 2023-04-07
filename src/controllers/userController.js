@@ -92,7 +92,8 @@ exports.getUser = (_req, res) => {
 };
 
 exports.getOneUser = (req, res) => {
-  UserModel.findById(req.params.userID, (err, data) => {
+  const { userId } = req.query;
+  UserModel.findById(userId, "-hashPassword", (err, data) => {
     if (err) res.status(500).send(err);
     res.json(data);
   });
