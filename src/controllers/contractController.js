@@ -44,3 +44,15 @@ exports.getContract = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+exports.getContracts = async (req, res) => {
+  const { userId } = req.query;
+  try {
+    // Find contracts of the specified user and populate the associated room data
+    const contracts = await Contract.find({ owner: userId }).populate("room");
+
+    res.json(contracts);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};

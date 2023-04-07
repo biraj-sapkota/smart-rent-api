@@ -10,6 +10,7 @@ exports.createBill = async (req, res) => {
       room,
       generator,
       receiver,
+      billDate,
       billAmount,
       electricityUnits,
       waterUnits,
@@ -23,6 +24,7 @@ exports.createBill = async (req, res) => {
       room,
       generator,
       receiver,
+      billDate,
       billAmount,
       electricityUnits,
       waterUnits,
@@ -31,20 +33,42 @@ exports.createBill = async (req, res) => {
       description,
     });
 
-    console.log(bill);
     // Save the bill
 
     // Get the receiver's email from the User schema
     const receiverUser = await User.findById(receiver);
     const receiverEmail = receiverUser.email;
-    console.log(receiverEmail);
     // Send email to the receiver
+    await bill.save();
+
     await sendEmail(
       receiverEmail,
-      "New Bill Issued",
-      "Your bill has been issued. Kindly clear them quickly."
+      `New Bill Issued - for ${bill.billDate}`,
+      `Dear ${receiverUser.name},
+
+We hope this email finds you well. We are writing to inform you that a new bill has been issued for your rental property. Please find below the details of the bill:
+
+Bill Details:
+-------------------------------------------------
+- Bill No: ${bill._id}
+- Room: ${room}
+- Electricity Units: ${electricityUnits} units
+- Water Units: ${waterUnits} units
+- Garbage Rate: NPR ${garbageRate.toLocaleString()}
+- Extra Charges: NPR ${extraCharges.toLocaleString()}
+-------------------------------------------------
+Bill Amount: NPR ${billAmount.toLocaleString()}
+
+
+Bill Description: ${description}
+
+Please ensure that the bill amount is paid as soon as possible. If you have any questions or concerns regarding the bill, please feel free to reach out to us. We are here to assist you.
+Thank you for your attention to this matter.
+
+Best regards,
+${generator}
+Smart Rent Application`
     );
-    await bill.save();
 
     res.status(200).json({ message: "Bill created successfully." });
   } catch (error) {
