@@ -2,8 +2,6 @@ const UserModel = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const Cloudinary = require("../Cloudinary");
-const fs = require("fs");
 
 exports.registerUser = (req, res) => {
   const user = new UserModel(req.body);

@@ -1,5 +1,4 @@
-const Room = require("../models/Room");
-const imageDownloader = require("image-downloader");
+const { roomType, Room } = require("../models/Room");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const fs = require("fs");
@@ -86,11 +85,16 @@ exports.getRoom = (_req, res) => {
 
 exports.getRoomByUser = (req, res) => {
   const { token } = req.cookies;
-  if (!token) throw "User Must be logged in";
+  if (!token) throw "User must be logged in";
+
   jwt.verify(token, process.env.Secret_Key, {}, async (err, userData) => {
     if (err) throw err;
     const { _id } = userData;
-    res.json(await Room.find({ owner: _id }));
+
+    const rooms = await Room.find({ owner: _id });
+    const roomTypes = Object.values(roomType);
+
+    res.json({ rooms, roomTypes });
   });
 };
 

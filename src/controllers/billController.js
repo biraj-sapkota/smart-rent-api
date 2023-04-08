@@ -1,7 +1,7 @@
 const Bill = require("../models/Bill");
 const User = require("../models/User");
 const nodemailer = require("nodemailer");
-const RoomModel = require("../models/Room");
+const { Room } = require("../models/Room");
 require("dotenv").config();
 
 exports.createBill = async (req, res) => {
@@ -156,7 +156,7 @@ exports.getTenantDetails = async (req, res, next) => {
   const { userId } = req.params;
   try {
     // Find rooms of the specified owner
-    const rooms = await RoomModel.find({ owner: userId });
+    const rooms = await Room.find({ owner: userId });
 
     // Array to store tenant details
     const tenantDetails = [];

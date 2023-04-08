@@ -1,25 +1,15 @@
 const mongoose = require("mongoose");
 
-const AddressSchema = new mongoose.Schema(
-  {
-    street: {
-      type: String,
-      trim: true,
-      required: [true, "street is required in address."],
-    },
-    city: {
-      type: String,
-      trim: true,
-      required: [true, "city is required in address."],
-    },
-    district: {
-      type: String,
-      trim: true,
-      required: [true, "district is required in address."],
-    },
-  },
-  { _id: false }
-);
+const roomType = {
+  Standard: "Standard",
+  VIP: "VIP",
+  Deluxe: "Deluxe",
+  Suite: "Suite",
+  Executive: "Executive",
+  Family: "Family",
+  OceanView: "Ocean View",
+  Poolside: "Poolside",
+};
 
 const RoomSchema = new mongoose.Schema(
   {
@@ -38,7 +28,8 @@ const RoomSchema = new mongoose.Schema(
     roomType: {
       type: String,
       trim: true,
-      required: [true, "room type is required in description."],
+      required: [true, "Room type is required in description."],
+      enum: Object.values(roomType),
     },
     numberOfrooms: {
       type: Number,
@@ -77,4 +68,7 @@ const RoomSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("room", RoomSchema);
+module.exports = {
+  roomType,
+  Room: mongoose.model("room", RoomSchema),
+};

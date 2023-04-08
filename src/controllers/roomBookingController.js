@@ -1,5 +1,5 @@
 const Contract = require("../models/Contract");
-const Room = require("../models/Room");
+const { Room } = require("../models/Room");
 const jwt = require("jsonwebtoken");
 const Transaction = require("../models/Transaction");
 
