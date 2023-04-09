@@ -18,6 +18,16 @@ const findConversation = async (req, _res, next) => {
   }
 };
 
+const getConversation = async (req, res) => {
+  const { ownerId } = req.query;
+  try {
+    let conversations = await Conversation.find({ ownerId: ownerId });
+    res.json(conversations);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 const createConversation = async (req, res, next) => {
   try {
     const conversation = await Conversation.findOneAndUpdate(
@@ -83,6 +93,33 @@ const getMessages = async (req, res) => {
   }
 };
 
+const postMessageByOwner = async (req, res) => {
+  const { roomId, ownerId, userId, message } = req.body;
+
+  let conversation = await Conversation.findOne({
+    ownerId,
+    userId,
+    roomId,
+  });
+
+  const conversationId = conversation._id;
+  if (conversation) {
+    const chat = new Chat({
+      conversationId,
+      sender: ownerId,
+      message,
+    });
+    // Save the chat message
+    const savedMessage = await chat.save();
+    io.in(conversationId).emit("message", {
+      conversationId,
+      userId,
+      message: savedMessage.message, // Use the 'message' property of the saved message
+    });
+    res.json(savedMessage);
+  }
+};
+
 const verifyToken = (req, res, next) => {
   const { token } = req.cookies;
 
@@ -103,7 +140,9 @@ const verifyToken = (req, res, next) => {
 module.exports = {
   postMessage: [verifyToken, postMessage],
   getMessages: [verifyToken, getMessages],
+  postMessageByOwner,
   createConversation,
   findConversation,
   setIO,
+  getConversation,
 };

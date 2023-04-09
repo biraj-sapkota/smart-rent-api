@@ -13,5 +13,7 @@ chatRouter.post(
   chatController.createConversation,
   chatController.postMessage
 );
+chatRouter.post("/owner", chatController.postMessageByOwner);
+chatRouter.get("/owner", chatController.getConversation);
 
 module.exports = chatRouter;
