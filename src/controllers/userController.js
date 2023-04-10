@@ -72,6 +72,26 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+exports.rejectOwnershipRequest = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    // Find the user by userId
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.validDocument = null;
+
+    const updatedUser = await user.save();
+    res.status(200).json(updatedUser._id);
+  } catch (error) {
+    console.error("Error approving request:", error);
+    res.status(500).json({ error: "Failed to approve user." });
+  }
+};
+
 exports.deleteUser = (req, res) => {
   UserModel.deleteOne({ _id: req.params.userID }, (err) => {
     if (err) res.status(500).send(err);

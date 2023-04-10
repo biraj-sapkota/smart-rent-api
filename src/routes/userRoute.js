@@ -12,6 +12,7 @@ userRouter.get("/info", userController.getOneUser);
 userRouter.post("/register", userController.registerUser);
 userRouter.post("/login", userController.loginUser);
 userRouter.put("/", userController.updateUser);
+userRouter.put("/reject-user", userController.rejectOwnershipRequest);
 userRouter.delete(
   "/:userID",
   userController.checkUser,
