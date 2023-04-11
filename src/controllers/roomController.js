@@ -10,17 +10,17 @@ exports.createRoom = async (req, res) => {
   try {
     const { token } = req.cookies;
     const userData = jwt.verify(token, process.env.Secret_Key);
-    const photos = req.body.photos;
+    const roomData = req.body;
 
-    const urls = photos.map((photo) => photo.url);
     const room = new Room({
-      title: req.body.title,
-      roomImages: urls,
-      roomDescription: req.body.description,
-      address: req.body.address,
-      numberOfrooms: req.body.numberOfRooms,
-      rentAmount: req.body.rentAmount,
-      roomType: req.body.roomType,
+      title: roomData.title,
+      roomImages: roomData.roomImages,
+      contract: roomData.contract,
+      roomDescription: roomData.roomDescription,
+      address: roomData.address,
+      numberOfrooms: roomData.numberOfrooms,
+      rentAmount: roomData.rentAmount,
+      roomType: roomData.roomType,
       owner: userData._id,
     });
 
@@ -62,6 +62,7 @@ exports.updateRoom = (req, res) => {
     req.body,
     { new: true, useFindAndModify: false },
     (err, data) => {
+      console.log(data);
       if (err) res.status(500).send(err);
       res.json(data);
     }
