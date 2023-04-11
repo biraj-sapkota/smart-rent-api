@@ -62,11 +62,11 @@ const postMessage = async (req, res) => {
     // Save the chat message
     const savedMessage = await chat.save();
     res.json(savedMessage);
-    // Emit the message event to all sockets in the conversation
-    io.in(conversationId).emit("message", {
+    // Emit the message event to the conversation's socket room
+    io.to(conversationId).emit("message", {
       conversationId,
       userId,
-      message: savedMessage.message, // Use the 'message' property of the saved message
+      message: savedMessage.message,
     });
   } catch (error) {
     console.error("Error posting message:", error);
@@ -111,10 +111,10 @@ const postMessageByOwner = async (req, res) => {
     });
     // Save the chat message
     const savedMessage = await chat.save();
-    io.in(conversationId).emit("message", {
+    io.to(conversationId).emit("message", {
       conversationId,
       userId,
-      message: savedMessage.message, // Use the 'message' property of the saved message
+      message: savedMessage.message,
     });
     res.json(savedMessage);
   }
