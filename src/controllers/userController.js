@@ -157,3 +157,33 @@ exports.requestOwnership = async (req, res) => {
     res.status(500).json({ error: "Failed to add valid documents" });
   }
 };
+
+exports.updateUserProfile = async (req, res) => {
+  const { userId, values } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!user.comparePassword(values.password, user.hashPassword)) {
+      return res.status(401).send("Wrong Password!!");
+    }
+
+    user.name = values.name;
+    user.DOB = values.DOB;
+    user.contact = values.contact;
+    user.address = values.address;
+    user.gender = values.gender;
+
+    if (values.newPassword) {
+      user.hashPassword = bcrypt.hashSync(values.newPassword, 10);
+    }
+    const updatedUser = await user.save();
+    res.status(200).json(updatedUser._id);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "Failed to update user." });
+  }
+};
