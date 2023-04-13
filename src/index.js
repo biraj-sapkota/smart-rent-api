@@ -1,4 +1,4 @@
-const connectToMongo = require("./config/dbConnection");
+require("./seed");
 const configureExpress = require("./app");
 require("dotenv").config();
 const socketIO = require("socket.io");
@@ -6,8 +6,6 @@ const http = require("http");
 const configureSocketEvents = require("./socketEvents");
 
 const startServer = async () => {
-  await connectToMongo();
-
   const app = configureExpress();
   const server = http.createServer(app);
   const io = socketIO(server, {
