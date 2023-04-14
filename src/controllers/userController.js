@@ -15,6 +15,19 @@ exports.registerUser = (req, res) => {
   });
 };
 
+exports.addAdmin = (req, res) => {
+  const values = req.body;
+  const user = new UserModel(values);
+  user.hashPassword = bcrypt.hashSync(values.password, 10);
+  user.save((err, _data) => {
+    if (err) {
+      res.status(400).send(err);
+    } else {
+      return res.json("Admin Added with email: " + user.email);
+    }
+  });
+};
+
 exports.loginUser = (req, res) => {
   UserModel.findOne({ email: req.body.email }, (err, data) => {
     if (err) throw err;
@@ -90,7 +103,7 @@ exports.rejectOwnershipRequest = async (req, res) => {
 };
 
 exports.deleteUser = (req, res) => {
-  UserModel.deleteOne({ _id: req.params.userID }, (err) => {
+  UserModel.deleteOne({ _id: req.params.userId }, (err) => {
     if (err) res.status(500).send(err);
     res.send("User Deleted Successfully!!");
   });

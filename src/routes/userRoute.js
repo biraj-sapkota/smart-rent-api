@@ -10,14 +10,11 @@ userRouter.get("/profile", userController.getProfile);
 userRouter.post("/logout", userController.logoutUser);
 userRouter.get("/info", userController.getOneUser);
 userRouter.post("/register", userController.registerUser);
+userRouter.post("/addowner", userController.addAdmin);
 userRouter.post("/login", userController.loginUser);
 userRouter.put("/", userController.updateUser);
 userRouter.put("/profile", userController.updateUserProfile);
 userRouter.put("/reject-user", userController.rejectOwnershipRequest);
-userRouter.delete(
-  "/:userID",
-  userController.checkUser,
-  userController.deleteUser
-);
+userRouter.delete("/:userId", userController.deleteUser);
 
 module.exports = userRouter;
