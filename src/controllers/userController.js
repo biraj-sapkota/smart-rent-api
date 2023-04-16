@@ -2,14 +2,20 @@ const UserModel = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const {
+  generateVerificationToken,
+  sendVerificationEmail,
+} = require("./verificationController");
 
 exports.registerUser = (req, res) => {
   const user = new UserModel(req.body);
+  user.verificationToken = generateVerificationToken();
   user.hashPassword = bcrypt.hashSync(req.body.password, 10);
   user.save((err, _data) => {
     if (err) {
       res.status(400).send(err);
     } else {
+      sendVerificationEmail(user.email, user.verificationToken);
       return res.json("User Registered with email: " + user.email);
     }
   });
@@ -38,22 +44,26 @@ exports.loginUser = (req, res) => {
       if (!data.comparePassword(req.body.password, data.hashPassword)) {
         res.status(401).send("Wrong Password!!");
       } else {
-        const user = {
-          email: data.email,
-          userType: data.userType,
-          DOB: data.DOB,
-          contact: data.contact,
-          address: data.address,
-          gender: data.gender,
-          _id: data.id,
-          name: data.name,
-          validDocument: data.validDocument,
-        };
+        if (!data.verified) {
+          res.status(403).send("Email not verified. Please verify your email.");
+        } else {
+          const user = {
+            email: data.email,
+            userType: data.userType,
+            DOB: data.DOB,
+            contact: data.contact,
+            address: data.address,
+            gender: data.gender,
+            _id: data.id,
+            name: data.name,
+            validDocument: data.validDocument,
+          };
 
-        jwt.sign(user, process.env.Secret_Key, {}, (err, token) => {
-          if (err) throw err;
-          res.cookie("token", token).json(user);
-        });
+          jwt.sign(user, process.env.Secret_Key, {}, (err, token) => {
+            if (err) throw err;
+            res.cookie("token", token).json(user);
+          });
+        }
       }
     }
   });

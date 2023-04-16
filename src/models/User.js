@@ -52,6 +52,13 @@ const UserSchema = new mongoose.Schema(
     remarks: {
       type: String,
     },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,

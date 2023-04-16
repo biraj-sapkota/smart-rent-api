@@ -1,5 +1,6 @@
 const express = require("express");
 const userController = require("../controllers/userController");
+const { verifyEmail } = require("../controllers/verificationController");
 const { userSchema, validateUserSchema } = require("../middleware/userSchema");
 
 const userRouter = express.Router();
@@ -12,6 +13,7 @@ userRouter.get("/info", userController.getOneUser);
 userRouter.post("/register", userController.registerUser);
 userRouter.post("/addowner", userController.addAdmin);
 userRouter.post("/login", userController.loginUser);
+userRouter.post("/verifyUser", verifyEmail);
 userRouter.put("/", userController.updateUser);
 userRouter.put("/profile", userController.updateUserProfile);
 userRouter.put("/reject-user", userController.rejectOwnershipRequest);
