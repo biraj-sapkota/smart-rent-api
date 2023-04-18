@@ -2,6 +2,7 @@ const Contract = require("../models/Contract");
 const { Room } = require("../models/Room");
 const jwt = require("jsonwebtoken");
 const Transaction = require("../models/Transaction");
+const { verifyPayment } = require("./khaltiController");
 
 exports.makeRoomBooking = (req, res) => {
   const { token } = req.cookies;
@@ -9,30 +10,34 @@ exports.makeRoomBooking = (req, res) => {
   if (!token) throw "User Must be logged in";
   try {
     jwt.verify(token, process.env.Secret_Key, {}, async (_err, userData) => {
-      const { roomId, ownerId, payload, agreementDetails } = req.body;
-      const contract = new Contract({
-        tenant: userData._id,
-        room: roomId,
-        owner: ownerId,
-        agreementDetails: agreementDetails,
-      });
-      const booking = await contract.save();
+      const { roomId, amount, ownerId, payload, agreementDetails } = req.body;
 
-      const transaction = new Transaction({
-        transactionAmount: payload.amount / 0.1,
-        payor: userData._id,
-        room: roomId,
-        receiver: ownerId,
-        khalti_idx: payload.idx,
-      });
-      await transaction.save();
+      const paymentStatus = await verifyPayment(amount, payload);
+      if (paymentStatus) {
+        const contract = new Contract({
+          tenant: userData._id,
+          room: roomId,
+          owner: ownerId,
+          agreementDetails: agreementDetails,
+        });
+        const booking = await contract.save();
 
-      const room = await Room.findById(roomId);
-      room.availability = false;
-      room.tenant = userData._id;
-      await room.save();
+        const transaction = new Transaction({
+          transactionAmount: amount,
+          payor: userData._id,
+          room: roomId,
+          receiver: ownerId,
+          khalti_id: paymentStatus,
+        });
+        await transaction.save();
 
-      res.status(200).json(booking);
+        const room = await Room.findById(roomId);
+        room.availability = false;
+        room.tenant = userData._id;
+        await room.save();
+
+        res.status(200).json(booking);
+      }
     });
   } catch (error) {
     console.error("Error booking the room:", error);

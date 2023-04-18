@@ -1,25 +1,30 @@
 const Bill = require("../models/Bill");
 const Transaction = require("../models/Transaction");
+const { verifyPayment } = require("./khaltiController");
 
 exports.createTransaction = async (req, res) => {
   const { billId, payload } = req.body;
   try {
     const bill = await Bill.findById(billId);
     const { billAmount, room, receiver, generator } = bill;
-    const transaction = new Transaction({
-      transactionAmount: billAmount,
-      payor: receiver,
-      room: room,
-      receiver: generator,
-      bill: billId,
-      khalti_idx: payload.idx,
-    });
-    await transaction.save();
+    const paymentStatus = await verifyPayment(billAmount, payload);
 
-    bill.paidStatus = true;
-    await bill.save();
+    if (paymentStatus) {
+      const transaction = new Transaction({
+        transactionAmount: billAmount,
+        payor: receiver,
+        room: room,
+        receiver: generator,
+        bill: billId,
+        khalti_id: paymentStatus,
+      });
+      await transaction.save();
 
-    res.status(200).json(transaction);
+      bill.paidStatus = true;
+      await bill.save();
+
+      res.status(200).json(transaction);
+    }
   } catch (error) {
     res.status(500).json(error);
   }

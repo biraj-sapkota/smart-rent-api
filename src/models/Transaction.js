@@ -23,9 +23,9 @@ const TransactionSchema = new mongoose.Schema(
       ref: "Bill",
       default: null,
     },
-    khalti_idx: {
-      type: String,
-      required: true,
+    khalti_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "khalti",
     },
   },
   {
