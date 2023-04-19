@@ -1,5 +1,6 @@
 const axios = require("axios");
 const Khalti = require("../models/Khalti");
+require("dotenv").config();
 
 const verifyPayment = async (actualAmount, payload) => {
   try {
@@ -10,7 +11,7 @@ const verifyPayment = async (actualAmount, payload) => {
 
     let config = {
       headers: {
-        Authorization: "Key test_secret_key_8b91062616f445d88aa2ff1b48a8c6ec",
+        Authorization: process.env.Khalti_Secret_Key,
       },
     };
 

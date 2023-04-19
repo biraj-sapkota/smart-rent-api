@@ -19,7 +19,6 @@ exports.createBill = async (req, res) => {
       description,
     } = req.body;
 
-    // Create the bill
     const bill = new Bill({
       room,
       generator,

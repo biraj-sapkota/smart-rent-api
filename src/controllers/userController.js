@@ -150,7 +150,8 @@ exports.getProfile = (req, res) => {
   if (token) {
     jwt.verify(token, process.env.Secret_Key, {}, async (err, user) => {
       if (err) throw err;
-      res.json(user);
+      const { hashPassword, ...userData } = user;
+      res.json(userData);
     });
   } else {
     res.json(null);
@@ -174,7 +175,7 @@ exports.requestOwnership = async (req, res) => {
     // Save the updated user document
     const updatedUser = await user.save();
 
-    res.status(200).json(updatedUser);
+    res.status(200).json(updatedUser._id);
   } catch (error) {
     console.error("Error adding valid documents:", error);
     res.status(500).json({ error: "Failed to add valid documents" });
