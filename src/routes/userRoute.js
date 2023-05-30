@@ -5,7 +5,6 @@ const {
   forgotPassword,
   resetPassword,
 } = require("../controllers/passwordController");
-const { userSchema, validateUserSchema } = require("../middleware/userSchema");
 
 const userRouter = express.Router();
 

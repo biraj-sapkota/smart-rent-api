@@ -1,4 +1,4 @@
-// Import required modules
+
 const Chat = require("../models/Chat");
 const Conversation = require("../models/Conversation");
 const jwt = require("jsonwebtoken");
@@ -48,21 +48,21 @@ const createConversation = async (req, res, next) => {
   }
 };
 
-// Post a new message
+
 const postMessage = async (req, res) => {
   const { userId, message } = req.body;
   const conversationId = req.conversationId;
   try {
-    // Create a new chat message
+    
     const chat = new Chat({
       conversationId,
       sender: userId,
       message,
     });
-    // Save the chat message
+    
     const savedMessage = await chat.save();
     res.json(savedMessage);
-    // Emit the message event to the conversation's socket room
+    
     io.to(conversationId).emit("message", {
       conversationId,
       userId,
@@ -78,11 +78,11 @@ const setIO = (socketIO) => {
   io = socketIO;
 };
 
-// Get messages for a conversation
+
 const getMessages = async (req, res) => {
   const conversationId = req.conversationId;
   try {
-    // Retrieve all chat messages for the given conversation
+    
     const messages = await Chat.find({
       conversationId,
     });
@@ -109,7 +109,7 @@ const postMessageByOwner = async (req, res) => {
       sender: ownerId,
       message,
     });
-    // Save the chat message
+    
     const savedMessage = await chat.save();
     io.to(conversationId).emit("message", {
       conversationId,
