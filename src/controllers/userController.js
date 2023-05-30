@@ -76,7 +76,7 @@ exports.logoutUser = (req, res) => {
 exports.updateUser = async (req, res) => {
   const { userId } = req.body;
   try {
-    // Find the user by userId
+    
     const user = await UserModel.findById(userId);
 
     if (!user) {
@@ -95,7 +95,7 @@ exports.updateUser = async (req, res) => {
 exports.rejectOwnershipRequest = async (req, res) => {
   const { userId } = req.body;
   try {
-    // Find the user by userId
+    
     const user = await UserModel.findById(userId);
 
     if (!user) {
@@ -161,18 +161,18 @@ exports.getProfile = (req, res) => {
 exports.requestOwnership = async (req, res) => {
   const { userId, images, remarks } = req.body;
   try {
-    // Find the user by userId
+    
     const user = await UserModel.findById(userId);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Add the provided images to the validDocument array
+    
     user.validDocument = images;
     user.remarks = remarks;
 
-    // Save the updated user document
+    
     const updatedUser = await user.save();
 
     res.status(200).json(updatedUser._id);

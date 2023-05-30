@@ -32,12 +32,12 @@ exports.createBill = async (req, res) => {
       description,
     });
 
-    // Save the bill
+    
 
-    // Get the receiver's email from the User schema
+    
     const receiverUser = await User.findById(receiver);
     const receiverEmail = receiverUser.email;
-    // Send email to the receiver
+    
     await bill.save();
 
     await sendEmail(
@@ -76,7 +76,7 @@ Smart Rent Application`
   }
 };
 
-// Send email function using nodemailer
+
 const sendEmail = async (toEmail, subject, message) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -87,7 +87,7 @@ const sendEmail = async (toEmail, subject, message) => {
       },
     });
 
-    // Compose the email
+    
     const mailOptions = {
       from: process.env.Google_UserName,
       to: toEmail,
@@ -95,10 +95,9 @@ const sendEmail = async (toEmail, subject, message) => {
       text: message,
     };
 
-    // Send the email
+    
     await transporter.sendMail(mailOptions);
   } catch (error) {
-    console.error("Error sending email:", error);
     throw new Error("Failed to send email.");
   }
 };
@@ -125,7 +124,7 @@ exports.deleteBill = (req, res) => {
 exports.getBill = async (req, res) => {
   const { userId } = req.query;
   try {
-    // Find bills of the specified user
+    
     const bills = await Bill.find({ receiver: userId });
     res.json(bills);
   } catch (error) {
@@ -136,7 +135,7 @@ exports.getBill = async (req, res) => {
 exports.getInvoice = async (req, res) => {
   const { userId } = req.query;
   try {
-    // Find bills of the specified user
+    
     const bills = await Bill.find({ generator: userId });
     res.json(bills);
   } catch (error) {
@@ -154,18 +153,18 @@ exports.getSingleBill = (req, res) => {
 exports.getTenantDetails = async (req, res, next) => {
   const { userId } = req.params;
   try {
-    // Find rooms of the specified owner
+    
     const rooms = await Room.find({ owner: userId });
 
-    // Array to store tenant details
+    
     const tenantDetails = [];
 
-    // Iterate over each room
+    
     for (const room of rooms) {
-      // Find the tenant for the room
+      
       const tenant = await User.findById(room.tenant);
 
-      // If tenant exists, add the details to the array
+      
       if (tenant) {
         const { name, contact, email, address } = tenant;
         const tenantInfo = {
@@ -181,7 +180,7 @@ exports.getTenantDetails = async (req, res, next) => {
       }
     }
 
-    // Return the tenant details
+    
     res.json(tenantDetails);
   } catch (error) {
     next(error);
