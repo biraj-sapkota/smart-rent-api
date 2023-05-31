@@ -62,7 +62,6 @@ exports.updateRoom = (req, res) => {
     req.body,
     { new: true, useFindAndModify: false },
     (err, data) => {
-      console.log(data);
       if (err) res.status(500).send(err);
       res.json(data);
     }

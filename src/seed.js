@@ -11,6 +11,7 @@ const defaultAdmin = {
   contact: "9800000000",
   userType: "admin",
   gender: "male",
+  verified: true,
 };
 
 const seedAdminUser = async () => {

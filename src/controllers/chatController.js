@@ -1,9 +1,6 @@
-
 const Chat = require("../models/Chat");
 const Conversation = require("../models/Conversation");
 const jwt = require("jsonwebtoken");
-
-let io;
 
 const findConversation = async (req, _res, next) => {
   const { roomId, ownerId, userId } = req.query;
@@ -48,41 +45,27 @@ const createConversation = async (req, res, next) => {
   }
 };
 
-
 const postMessage = async (req, res) => {
   const { userId, message } = req.body;
   const conversationId = req.conversationId;
   try {
-    
     const chat = new Chat({
       conversationId,
       sender: userId,
       message,
     });
-    
+
     const savedMessage = await chat.save();
     res.json(savedMessage);
-    
-    io.to(conversationId).emit("message", {
-      conversationId,
-      userId,
-      message: savedMessage.message,
-    });
   } catch (error) {
     console.error("Error posting message:", error);
     return res.status(500).json({ error: "Failed to post message" });
   }
 };
 
-const setIO = (socketIO) => {
-  io = socketIO;
-};
-
-
 const getMessages = async (req, res) => {
   const conversationId = req.conversationId;
   try {
-    
     const messages = await Chat.find({
       conversationId,
     });
@@ -109,13 +92,8 @@ const postMessageByOwner = async (req, res) => {
       sender: ownerId,
       message,
     });
-    
+
     const savedMessage = await chat.save();
-    io.to(conversationId).emit("message", {
-      conversationId,
-      userId,
-      message: savedMessage.message,
-    });
     res.json(savedMessage);
   }
 };
@@ -143,6 +121,5 @@ module.exports = {
   postMessageByOwner,
   createConversation,
   findConversation,
-  setIO,
   getConversation,
 };
