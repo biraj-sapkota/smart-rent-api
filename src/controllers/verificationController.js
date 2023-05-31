@@ -16,7 +16,7 @@ const sendVerificationEmail = (email, token) => {
     },
   });
 
-  const verificationLink = `http://localhost:3000/verify-email?token=${token}`;
+  const verificationLink = `${process.env.Front_URL}/verify-email?token=${token}`;
 
   const mailOptions = {
     from: process.env.Google_UserName,

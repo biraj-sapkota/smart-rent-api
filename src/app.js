@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const routesSetup = require("./routes/index");
 var cloudinary = require("cloudinary").v2;
+require("dotenv").config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -16,7 +17,11 @@ const configureExpress = () => {
 
   app.use(
     cors({
-      origin: ["http://localhost:3000", "http://192.168.1.72:3000"],
+      origin: [
+        process.env.Front_URL,
+        "http://localhost:3000",
+        "http://192.168.1.72:3000",
+      ],
       credentials: true,
     })
   );

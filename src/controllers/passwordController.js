@@ -35,7 +35,7 @@ const sendResetPasswordEmail = (email, token) => {
     },
   });
 
-  const passwordResetLink = `http://localhost:3000/reset-password?token=${token}`;
+  const passwordResetLink = `${process.env.Front_URL}/reset-password?token=${token}`;
 
   const mailOptions = {
     from: process.env.Google_UserName,
