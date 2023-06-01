@@ -111,9 +111,22 @@ exports.rejectOwnershipRequest = async (req, res) => {
 };
 
 exports.deleteUser = (req, res) => {
-  UserModel.deleteOne({ _id: req.params.userId }, (err) => {
-    if (err) res.status(500).send(err);
-    res.send("User Deleted Successfully!!");
+  const { userId } = req.params;
+
+  UserModel.findOne({ _id: userId, userType: "admin" }, (err, user) => {
+    if (err) {
+      res.status(500).send(err);
+    } else if (!user) {
+      res.status(404).send("User not found or not an admin");
+    } else {
+      UserModel.deleteOne({ _id: userId }, (err) => {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          res.send("User Deleted Successfully!!");
+        }
+      });
+    }
   });
 };
 

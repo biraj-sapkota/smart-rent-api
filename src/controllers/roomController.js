@@ -68,12 +68,23 @@ exports.updateRoom = (req, res) => {
   );
 };
 
-exports.deleteRoom = (req, res) => {
+exports.deleteRoom = async (req, res) => {
   const { roomId } = req.query;
-  Room.deleteOne({ _id: roomId }, (err) => {
-    if (err) res.status(500).send(err);
-    res.send("Room Deleted Successfully!!");
-  });
+
+  try {
+    const room = await Room.findById(roomId).exec();
+
+    if (room && room.tenant) {
+      res
+        .status(500)
+        .json({ error: "Failed to delete - Room has a tenant assigned" });
+    } else {
+      await Room.deleteOne({ _id: roomId }).exec();
+      res.send("Room Deleted Successfully!!");
+    }
+  } catch (err) {
+    res.status(500).send(err);
+  }
 };
 
 exports.getRoom = (_req, res) => {
